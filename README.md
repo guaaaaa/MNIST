@@ -6,7 +6,7 @@ Test set accuracy: 97.76%
 # To play with the model
 ## 1. Clone the repo to a local directory
 ## 2. Create a virtual environment and activate it
-```make venv```
+```make venv```\\
 ```source mnist/bin/activate```
 
 ## 3. Install dependencies

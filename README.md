@@ -25,6 +25,10 @@ Test set accuracy: 97.76%
 
 ```make eval```
 
+#### 6. To visualize predictions
+
+```make visualize```
+
 # Customize training
 
 ```python train.py --epochs 3 --batch_size 32 --lr 0.01```
@@ -39,3 +43,6 @@ Note: only one customized model will be saved. If a customized model already exi
 
 #### If you want to evaluate a customized model
 ```python eval.py --load True```
+
+#### If you want to visualize a customized model
+```python visual.py --load True```

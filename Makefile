@@ -10,3 +10,6 @@ train:
 
 eval:
 	python eval.py
+
+visualize:
+	python visual.py

@@ -7,7 +7,6 @@ from dataset import dataset
 from utils import device, load
 from loss_optimizer import loss_optimizer
 from engine import accuracy_fn
-from torch.utils.data import DataLoader
 
 parser = argparse.ArgumentParser(description="Load")
 
@@ -36,22 +35,33 @@ else:
     print("Successfully load the default model")
 
 # Get data set
-BATCH_SIZE = 32
 train_data, test_data = dataset()
 
 loss_fn, optimizer = loss_optimizer(model, lr=0.01)
 
-def make_pred(model, test_data, device):
-    test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
-    acc = 0
-    num = 0
+def make_pred(model, test_data, device, n=9):
     model.eval()
     with torch.inference_mode():
-        for X, y in test_dataloader:
-            X, y = X.to(device), y.to(device)
-            y_pred = model(X)
-            acc += accuracy_fn(y, y_pred.argmax(dim=1))
-            num += 1
-    print(f'Accuracy on test set: {acc/num}')
+        fig = plt.figure(figsize=(10, 10))
+        for i in range(n):
+            rand_int = torch.randint(0, len(test_data) - n, size=[1]).item()
+            image, label = test_data[rand_int]
+            image = image.unsqueeze(dim=0).to(device)
+
+          # Show image first
+            fig.add_subplot(3, 3, i+1)
+            plt.imshow(image.squeeze().cpu(),cmap='gray')
+
+          # Then normalize for prediction
+            mu = image.mean()
+            std = image.std()
+            image = (image - mu)/ image.std()
+            pred = model(image)
+
+            if pred.argmax(dim=1).item() == label:
+                plt.title(f'Label: {label} | Pred: {pred.argmax(dim=1).item()}', c='g')
+            else:
+                plt.title(f'Label: {label} | Pred: {pred.argmax(dim=1).item()}', c='r')
+            plt.axis('off')
 
 make_pred(model, test_data, device)
